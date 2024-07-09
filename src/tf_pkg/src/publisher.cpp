@@ -36,6 +36,8 @@ public:
   {
     publisher_    = this->create_publisher<std_msgs::msg::String>("topic", 10);
     publisher2_   = this->create_publisher<test_msgs::msg::Num>("topic2", 10);
+    subscription_ = this->create_subscription<turtlesim::msg::Pose>(
+      "/turtle1/pose", 10, std::bind(&MinimalPublisher::pose_callback, this, _1));
 
     this->declare_parameter("my_parameter", "world");
     timer_ = this->create_wall_timer(
@@ -66,6 +68,7 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   rclcpp::Publisher<test_msgs::msg::Num>::SharedPtr   publisher2_;
+  rclcpp::Subscription<turtlesim::msg::Pose>::SharedPtr subscription_;
   size_t count_;
 };
 
