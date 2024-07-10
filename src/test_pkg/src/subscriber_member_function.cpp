@@ -20,33 +20,28 @@
 
 using std::placeholders::_1;
 
-class MinimalSubscriber : public rclcpp::Node
-{
+class MinimalSubscriber : public rclcpp::Node {
 public:
-  MinimalSubscriber()
-  : Node("minimal_subscriber")
-  {
+  MinimalSubscriber() : Node("minimal_subscriber") {
     subscription_ = this->create_subscription<std_msgs::msg::String>(
-      "topic", 10, std::bind(&MinimalSubscriber::topic_callback, this, _1));
+        "topic", 10, std::bind(&MinimalSubscriber::topic_callback, this, _1));
     subscription2_ = this->create_subscription<test_msgs::msg::Num>(
-      "topic2", 10, std::bind(&MinimalSubscriber::topic_callback2, this, _1));
+        "topic2", 10, std::bind(&MinimalSubscriber::topic_callback2, this, _1));
   }
 
 private:
-  void topic_callback(const std_msgs::msg::String::SharedPtr msg) const
-  {
+  void topic_callback(const std_msgs::msg::String::SharedPtr msg) const {
     RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
   }
-  void topic_callback2(const test_msgs::msg::Num::SharedPtr msg) const
-  {
-    RCLCPP_INFO_STREAM(this->get_logger(), "I heard(NUM): '" << msg->num << "'");
+  void topic_callback2(const test_msgs::msg::Num::SharedPtr msg) const {
+    RCLCPP_INFO_STREAM(this->get_logger(),
+                       "I heard(NUM): '" << msg->num << "'");
   }
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
-  rclcpp::Subscription<test_msgs::msg::Num>::SharedPtr   subscription2_;
+  rclcpp::Subscription<test_msgs::msg::Num>::SharedPtr subscription2_;
 };
 
-int main(int argc, char * argv[])
-{
+int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<MinimalSubscriber>());
   rclcpp::shutdown();

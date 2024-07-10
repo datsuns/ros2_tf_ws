@@ -26,44 +26,40 @@ using namespace std::chrono_literals;
 /* This example creates a subclass of Node and uses std::bind() to register a
  * member function as a callback from the timer. */
 
-class MinimalPublisher : public rclcpp::Node
-{
+class MinimalPublisher : public rclcpp::Node {
 public:
-  MinimalPublisher()
-  : Node("minimal_publisher"), count_(0)
-  {
-    publisher_  = this->create_publisher<std_msgs::msg::String>("topic", 10);
+  MinimalPublisher() : Node("minimal_publisher"), count_(0) {
+    publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
     publisher2_ = this->create_publisher<test_msgs::msg::Num>("topic2", 10);
     this->declare_parameter("my_parameter", "world");
     timer_ = this->create_wall_timer(
-      500ms, std::bind(&MinimalPublisher::timer_callback, this));
+        500ms, std::bind(&MinimalPublisher::timer_callback, this));
   }
 
 private:
-  void timer_callback()
-  {
+  void timer_callback() {
     std::string my_param = this->get_parameter("my_parameter").as_string();
-    if( my_param == "world" ){
-        auto message = std_msgs::msg::String();
-        message.data = "Hello, world! " + std::to_string(count_++) + " w/ " + my_param;
-        RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-        publisher_->publish(message);
-    }
-    else {
-        auto message = test_msgs::msg::Num();
-        message.num = this->count_++;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Publishing: '" << message.num << "'");
-        publisher2_->publish(message);
+    if (my_param == "world") {
+      auto message = std_msgs::msg::String();
+      message.data =
+          "Hello, world! " + std::to_string(count_++) + " w/ " + my_param;
+      RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+      publisher_->publish(message);
+    } else {
+      auto message = test_msgs::msg::Num();
+      message.num = this->count_++;
+      RCLCPP_INFO_STREAM(this->get_logger(),
+                         "Publishing: '" << message.num << "'");
+      publisher2_->publish(message);
     }
   }
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  rclcpp::Publisher<test_msgs::msg::Num>::SharedPtr   publisher2_;
+  rclcpp::Publisher<test_msgs::msg::Num>::SharedPtr publisher2_;
   size_t count_;
 };
 
-int main(int argc, char * argv[])
-{
+int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<MinimalPublisher>());
   rclcpp::shutdown();
