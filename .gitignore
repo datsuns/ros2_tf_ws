@@ -1,3 +1,5 @@
 build/
 install/
 log/
+lsp.yaml
+compile_commands.json

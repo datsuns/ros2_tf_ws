@@ -18,6 +18,7 @@
 
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/detail/header__struct.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "tf2_ros/transform_broadcaster.h"
 #include "turtlesim/msg/pose.hpp"
@@ -51,10 +52,12 @@ private:
   void pose_callback(const turtlesim::msg::Pose::SharedPtr msg) const {
     // RCLCPP_INFO(this->get_logger(), "I heard: '%f.%f'", msg->x, msg->y);
     geometry_msgs::msg::TransformStamped t;
-    t.header.stamp = this->get_clock()->now();
+    t.header.stamp =
+        const_cast<std_msgs::msg::Header::ti>(this->get_clock()->now());
     t.header.frame_id = "world";
     t.child_frame_id = turtlename_.c_str();
   }
+
   void timer_callback() {
     std::string my_param = this->get_parameter("my_parameter").as_string();
     if (my_param == "world") {
@@ -71,6 +74,7 @@ private:
       publisher2_->publish(message);
     }
   }
+
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   rclcpp::Publisher<test_msgs::msg::Num>::SharedPtr publisher2_;
