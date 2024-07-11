@@ -49,11 +49,10 @@ public:
   }
 
 private:
-  void pose_callback(const turtlesim::msg::Pose::SharedPtr msg) const {
+  void pose_callback(const turtlesim::msg::Pose::SharedPtr msg) {
     // RCLCPP_INFO(this->get_logger(), "I heard: '%f.%f'", msg->x, msg->y);
     geometry_msgs::msg::TransformStamped t;
-    t.header.stamp =
-        const_cast<std_msgs::msg::Header::ti>(this->get_clock()->now());
+    t.header.stamp = this->get_clock()->now();
     t.header.frame_id = "world";
     t.child_frame_id = turtlename_.c_str();
   }
