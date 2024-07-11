@@ -20,6 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/detail/header__struct.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
 #include "turtlesim/msg/pose.hpp"
 
@@ -55,6 +56,19 @@ private:
     t.header.stamp = this->get_clock()->now();
     t.header.frame_id = "world";
     t.child_frame_id = turtlename_.c_str();
+
+    t.transform.translation.x = msg->x;
+    t.transform.translation.y = msg->y;
+    t.transform.translation.z = 0.0;
+
+    tf2::Quaternion q;
+    q.setRPY(0, 0, msg->theta);
+    t.transform.rotation.x = q.x();
+    t.transform.rotation.y = q.y();
+    t.transform.rotation.z = q.z();
+    t.transform.rotation.w = q.w();
+
+    this->tf_broadcaster_->sendTransform(t);
   }
 
   void timer_callback() {
@@ -63,14 +77,14 @@ private:
       auto message = std_msgs::msg::String();
       message.data =
           "Hello, world! " + std::to_string(count_++) + " w/ " + my_param;
-      RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-      publisher_->publish(message);
+      //RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+      //publisher_->publish(message);
     } else {
       auto message = test_msgs::msg::Num();
       message.num = this->count_++;
-      RCLCPP_INFO_STREAM(this->get_logger(),
-                         "Publishing: '" << message.num << "'");
-      publisher2_->publish(message);
+      //RCLCPP_INFO_STREAM(this->get_logger(),
+      //                   "Publishing: '" << message.num << "'");
+      //publisher2_->publish(message);
     }
   }
 
