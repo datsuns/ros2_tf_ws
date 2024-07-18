@@ -84,7 +84,17 @@ private:
                                                pow(t.transform.translation.x, 2) +
                                                pow(t.transform.translation.y, 2));
 
-        publisher_->publish(msg);
+        //publisher_->publish(msg);
+        auto dx = t.transform.translation.x;
+        auto dy = t.transform.translation.y;
+        if( (0 < dx && dx < 2) && (-1 < dy && dy < 1) ){
+          RCLCPP_WARN(
+              this->get_logger(), "danger (%f, %f)", dx, dy);
+        }
+        else {
+          RCLCPP_INFO(
+              this->get_logger(), "       (%f, %f)", dx, dy);
+        }
       }
       else
       {

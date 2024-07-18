@@ -1,5 +1,7 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+
 
 from launch_ros.actions import Node
 
@@ -29,6 +31,14 @@ def generate_launch_description():
             name='my_publish2',
             parameters=[
                 {'turtlename': 'turtle2'}
+            ]
+        ),
+        Node(
+            package='tf_pkg',
+            executable='listener',
+            name='my_listener',
+            parameters=[
+                {'target_frame': LaunchConfiguration('target_frame')}
             ]
         ),
     ])

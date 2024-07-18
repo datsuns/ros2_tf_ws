@@ -27,6 +27,7 @@ public:
     std::ostringstream stream;
     stream << "/" << turtlename_.c_str() << "/pose";
     std::string topic_name = stream.str();
+    RCLCPP_INFO(this->get_logger(), "subscribe [%s]", topic_name.c_str());
 
     subscription_ = this->create_subscription<turtlesim::msg::Pose>(
         topic_name, 10,
